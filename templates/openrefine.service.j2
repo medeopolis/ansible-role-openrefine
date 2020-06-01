@@ -1,0 +1,18 @@
+[Unit]
+Description=OpenRefine
+After=network.target
+Documentation=https://openrefine.org/
+
+[Service]
+WorkingDirectory={{ openrefine_base_dir }}
+User={{ openrefine_user }}
+Group={{ openrefine_user }}
+ExecStart={{ openrefine_base_dir }} -i {{ openrefine_listen_ip }}
+NoNewPrivileges=yes
+Type=forking
+TimeoutStopSec=3600s
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

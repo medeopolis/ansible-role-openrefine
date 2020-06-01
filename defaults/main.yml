@@ -1,2 +1,21 @@
 ---
-# defaults file for ansible-role-template
+openrefine_enabled: True
+openrefine_major_version: 3
+openrefine_minor_version: 3
+openrefine_file_extension: 'tar.gz'
+openrefine_distribution_prefix: 'openrefine'
+openrefine_dist_file: '{{ openrefine_distribution_prefix }}-linux-{{ openrefine_version }}.{{ openrefine_file_extension }}'
+openrefine_version: '{{ openrefine_major_version }}.{{ openrefine_minor_version }}'
+openrefine_download_url: 'https://github.com/OpenRefine/OpenRefine/releases/download/{{ openrefine_version }}/{{ openrefine_dist_file }}'
+openrefine_user: openrefine
+openrefine_user_home: /srv/openrefine
+openrefine_data_dir: '{{ openrefine_user_home }}/data'
+openrefine_log_dir: '{{ openrefine_user_home }}/logs'
+openrefine_base_dir: '{{ openrefine_user_home }}/{{ openrefine_distribution_prefix }}-{{ openrefine_version }}'
+openrefine_listen_ip: 127.0.0.1
+openrefine_http_port: 3333
+openrefine_memory: 4192M
+
+openrefine_extensions: []
+#  - { url: 'https://github.com/FAIRDataTeam/OpenRefine-metadata-extension/releases/download/v1.4.0/metadata-1.4.0-OpenRefine-3.3.tgz', name: 'metadata' }
+#  - { url: 'https://github.com/stkenny/grefine-rdf-extension/releases/download/v1.2.0-orefine-3.3/rdf-extension-1.2.0-orefine-3.3.zip', name: 'rdf' }

@@ -1,2 +1,65 @@
 ---
-# tasks file for ansible-role-template
+- block:
+  - name: Create the openrefine user
+    user: name={{ openrefine_user }} home={{ openrefine_user_home }} createhome=no shell=/usr/sbin/nologin system=yes
+
+  - name: Create the openrefine home, if it does not already exist.
+    file: dest={{ openrefine_user_home }} owner=root group=root state=directory recurse=yes
+
+  - name: Create the openrefine data and logs directories
+    file: dest={{ item }} owner={{ openrefine_user }} group={{ openrefine_user }} state=directory recurse=yes
+    with_items:
+      - '{{ openrefine_data_dir }}'
+      - '{{ openrefine_log_dir }}'
+
+  - name: Download openrefine
+    unarchive: remote_src=yes src={{ openrefine_download_url }} dest={{ openrefine_user_home }}
+    args:
+      creates: '{{ openrefine_user_home }}/{{ openrefine_distribution_prefix }}-{{ openrefine_version }}'
+
+  - name: Install the openrefine configuration
+    template: src=refine.ini dest={{ openrefine_user_home }}/{{ openrefine_distribution_prefix }}-{{ openrefine_version }}/refine.ini owner=root group=root mode=0644
+    notify: Restart openrefine
+    tags: [ 'openrefine', 'google_openrefine', 'openrefine_conf' ]
+
+  - name: Install the openrefine upstart init script
+    template: src=openrefine.conf.j2 dest=/etc/init/openrefine.conf owner=root group=root mode=0644
+    when: ansible_service_mgr != 'systemd'
+
+  - name: Install the OpenRefine systemd unit
+    template: src=openrefine.service.j2 dest=/lib/systemd/system/openrefine.service owner=root group=root mode=0644
+    register: openrefine_unit_install
+
+  - name: Reload the systemd configuration
+    systemd: daemon_reload=yes
+    when: openrefine_unit_install is changed
+
+  - name: Ensure that the service is running and enabled
+    service: name=openrefine state=started enabled=yes
+
+  when: openrefine_enabled
+  tags: [ 'openrefine', 'google_openrefine' ]
+
+- block:
+
+  - name: Ensure that the service is running and enabled
+    service: name=openrefine state=stopped enabled=no
+
+  when: not openrefine_enabled
+  tags: [ 'openrefine', 'google_openrefine' ]
+
+- name: Manage OpenRefine extensions
+  block:
+  - name: Create the openrefine modules dest directory
+    file: dest={{ openrefine_user_home }}/{{ openrefine_distribution_prefix }}-{{ openrefine_version }}/webapp/extensions/{{ item.name }} state=directory
+    with_items: '{{ openrefine_extensions }}'
+
+  - name: Download and unpack the openrefine modules
+    unarchive: src={{ item.url }} remote_src=yes dest={{ openrefine_user_home }}/{{ openrefine_distribution_prefix }}-{{ openrefine_version }}/webapp/extensions/{{ item.name }}
+    with_items: '{{ openrefine_extensions }}'
+    args:
+      creates: '{{ openrefine_user_home }}/{{ openrefine_distribution_prefix }}-{{ openrefine_version }}/webapp/extensions/{{ item.name }}/module'
+    notify: Restart openrefine
+
+  when: openrefine_enabled
+  tags: [ 'openrefine', 'google_openrefine', 'openrefine_extensions' ]

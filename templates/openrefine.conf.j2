@@ -1,0 +1,13 @@
+description "Google OpenRefine server"
+start on (local-filesystems and net-device-up IFACE!=lo)
+stop on runlevel [016]
+
+respawn
+respawn limit 10 5
+setuid {{ openrefine_user }}
+setgid {{ openrefine_user }}
+
+script
+  chdir {{ openrefine_base_dir }}
+  exec ./refine > {{ openrefine_log_dir }}/openrefine.log 2>&1
+end script
