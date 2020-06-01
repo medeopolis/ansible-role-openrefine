@@ -18,7 +18,7 @@
       creates: '{{ openrefine_user_home }}/{{ openrefine_distribution_prefix }}-{{ openrefine_version }}'
 
   - name: Install the openrefine configuration
-    template: src=refine.ini dest={{ openrefine_user_home }}/{{ openrefine_distribution_prefix }}-{{ openrefine_version }}/refine.ini owner=root group=root mode=0644
+    template: src=refine.ini.j2 dest={{ openrefine_user_home }}/{{ openrefine_distribution_prefix }}-{{ openrefine_version }}/refine.ini owner=root group=root mode=0644
     notify: Restart openrefine
     tags: [ 'openrefine', 'google_openrefine', 'openrefine_conf' ]
 
