@@ -3,12 +3,14 @@
 
 no_proxy="localhost,127.0.0.1"
 REFINE_PORT={{ openrefine_http_port }}
-#REFINE_HOST=127.0.0.1
+REFINE_HOST={{ openrefine_listen_ip }}
 #REFINE_WEBAPP=main\webapp
 
 # Memory and max form size allocations
 #REFINE_MAX_FORM_CONTENT_SIZE=1048576
 REFINE_MEMORY={{ openrefine_memory }}
+
+REFINE_DATA_DIR={{ openrefine_data_dir }}
 
 # Set initial java heap space (default: 256M) for better performance with large datasets
 REFINE_MIN_MEMORY={{ openrefine_memory }}
@@ -19,7 +21,8 @@ REFINE_MIN_MEMORY={{ openrefine_memory }}
 #JAVA_OPTIONS=-XX:+UseParallelGC -verbose:gc -Drefine.headless=true
 #JAVA_OPTIONS=-Drefine.data_dir=C:\Users\user\AppData\Roaming\OpenRefine
 JAVA_HOME={{ jdk_java_home }}
-JAVA_OPTIONS="-server -Djava.awt.headless=true -Dfile.encoding=UTF-8"
+#JAVA_OPTIONS=-Djava.awt.headless=true\ -server\ -Dfile.encoding=UTF-8
+JAVA_OPTIONS=-server
 
 # Uncomment to increase autosave period to 60 mins (default: 5 minutes) for better performance of long-lasting transformations
 #REFINE_AUTOSAVE_PERIOD=60

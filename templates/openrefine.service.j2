@@ -7,12 +7,15 @@ Documentation=https://openrefine.org/
 WorkingDirectory={{ openrefine_base_dir }}
 User={{ openrefine_user }}
 Group={{ openrefine_user }}
-ExecStart={{ openrefine_base_dir }}/refine -i {{ openrefine_listen_ip }}
+ExecStart={{ openrefine_base_dir }}/refine
 NoNewPrivileges=yes
-Type=forking
+Type=simple
 TimeoutStopSec=3600s
 Restart=on-failure
 RestartSec=10
+SuccessExitStatus=143
+StandardOutput=journal
+StandardError=journal
 
 [Install]
 WantedBy=multi-user.target

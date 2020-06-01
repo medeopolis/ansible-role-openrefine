@@ -11,6 +11,7 @@
     with_items:
       - '{{ openrefine_data_dir }}'
       - '{{ openrefine_log_dir }}'
+      - '{{ openrefine_user_home }}/.local/share/google/refine/cachedir'
 
   - name: Download openrefine
     unarchive: remote_src=yes src={{ openrefine_download_url }} dest={{ openrefine_user_home }}
@@ -55,7 +56,7 @@
     with_items: '{{ openrefine_extensions }}'
 
   - name: Download and unpack the openrefine modules
-    unarchive: src={{ item.url }} remote_src=yes dest={{ openrefine_user_home }}/{{ openrefine_distribution_prefix }}-{{ openrefine_version }}/webapp/extensions/{{ item.name }}
+    unarchive: src={{ item.url }} remote_src=yes dest={{ openrefine_user_home }}/{{ openrefine_distribution_prefix }}-{{ openrefine_version }}/webapp/extensions/{{ item.name }} owner=root group=root
     with_items: '{{ openrefine_extensions }}'
     args:
       creates: '{{ openrefine_user_home }}/{{ openrefine_distribution_prefix }}-{{ openrefine_version }}/webapp/extensions/{{ item.name }}/module'
