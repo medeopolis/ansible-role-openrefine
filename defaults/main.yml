@@ -1,7 +1,7 @@
 ---
 openrefine_enabled: True
 openrefine_major_version: 3
-openrefine_minor_version: 3
+openrefine_minor_version: 7.7
 openrefine_file_extension: 'tar.gz'
 openrefine_distribution_prefix: 'openrefine'
 openrefine_dist_file: '{{ openrefine_distribution_prefix }}-linux-{{ openrefine_version }}.{{ openrefine_file_extension }}'
@@ -14,7 +14,8 @@ openrefine_log_dir: '{{ openrefine_user_home }}/logs'
 openrefine_base_dir: '{{ openrefine_user_home }}/{{ openrefine_distribution_prefix }}-{{ openrefine_version }}'
 openrefine_listen_ip: 127.0.0.1
 openrefine_http_port: 3333
-openrefine_memory: 4192M
+# Configuring so openrefine has access to 80% of memory
+openrefine_memory: "{{ ansible_memfree_mb * 0.8 + 'M' }}"
 
 openrefine_extensions: []
 #  - { url: 'https://github.com/FAIRDataTeam/OpenRefine-metadata-extension/releases/download/v1.4.0/metadata-1.4.0-OpenRefine-3.3.tgz', name: 'metadata' }
